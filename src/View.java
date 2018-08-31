@@ -23,7 +23,8 @@ class View extends JPanel //The view class shows what the user will see.
     public void paintComponent(Graphics g)
     {
         g.setColor(new Color(128, 255, 255)); //Sets the color of the background to be cyan.
-        g.fillRect(0,0,this.getWidth(), this.getHeight()); //Fills the specified rectangle
+        Background background = new Background();
+        g.drawImage(background.loadImage(),0,0,null);
 
         //This for loop will loop through all of the brick objects
         for(int i = 0; i < model.bricks.size(); i++)
