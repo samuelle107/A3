@@ -9,6 +9,7 @@ class Model
     int hCamPos;
 
     ArrayList<Brick> bricks;
+    ArrayList<Boolean> brickCollision;
 
     Model(Mario m)
     {
@@ -26,6 +27,17 @@ class Model
     public void update()
     {
         mario.update();
+        Mario.x = hCamPos +500; //Keeps track of the x position of Mario.  Adding 500 because Mario starts at x = 500;
+        if(bricks.size() != 0)
+        {
+            for(int i = 0; i < bricks.size(); i++)
+            {
+                if(mario.collisionDetection(bricks.get(i)))
+                    Mario.canMoveLeft = false;
+                else
+                    Mario.canMoveLeft = true;
+            }
+        }
     }
 
     //Marshall Method

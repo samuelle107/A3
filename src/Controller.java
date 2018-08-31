@@ -5,20 +5,25 @@ class Controller implements MouseListener, KeyListener
     //Member variables
     View view;
     Model model;
+    Mario mario;
 
     boolean keyLeft;
     boolean keyRight;
     boolean keyUp;
     boolean keyDown;
+    boolean keySpace;
 
     int preXLocation; //X coordinate on mouse press
     int preYLocation; //Y coordinate on mouse press
     int postXLocation; //X coordinate on mouse release
     int postYLocation; //Y coordinate on mouse release
 
-    Controller(Model m) //Constructor
+    static int movementSpeed = 15;
+
+    Controller(Model m, Mario ma) //Constructor
     {
         model = m; //I pass in the model object to this constructor and call it "m".  It is then assigned to model in this class.
+        mario = ma;
     }
 
     void setView(View v)
@@ -28,7 +33,7 @@ class Controller implements MouseListener, KeyListener
 
     public void keyPressed(KeyEvent e)
     {
-        int movementSpeed = 15; //Movement speed of the camera
+         //Movement speed of the camera
 
         switch(e.getKeyCode())
         {
@@ -36,7 +41,8 @@ class Controller implements MouseListener, KeyListener
             {
                 keyRight = true;
                 Mario.isFacingRight = true; //When the player moves right, Mario is facing right
-                model.hCamPos += movementSpeed; //Moves x pixels to the right.
+                //if(Mario.canMoveRight)
+                    model.hCamPos += movementSpeed; //Moves x pixels to the right.
 
                 //This will cycle through an integer from 0 to 4.  Changes the mario image
                 if(Mario.marioImageIndex != 4)
@@ -49,15 +55,15 @@ class Controller implements MouseListener, KeyListener
             {
                 keyLeft = true;
                 Mario.isFacingRight = false;
-                model.hCamPos -= movementSpeed; //Moves x pixels to the left.
-
+                if(Mario.canMoveLeft)
+                    model.hCamPos -= movementSpeed; //Moves x pixels to the left.
                 if(Mario.marioImageIndex != 4)
                     Mario.marioImageIndex++;
                 else
                     Mario.marioImageIndex = 0;
             }
             break;
-            case KeyEvent.VK_UP: keyUp = true; model.mario.jump();  break;
+            case KeyEvent.VK_UP: keyUp = true; break;
             case KeyEvent.VK_DOWN: keyDown = true; break;
             case KeyEvent.VK_L: //When the user presses L, unmarshal the JSON
             {
@@ -72,6 +78,13 @@ class Controller implements MouseListener, KeyListener
                 System.out.println("You saved the map");
             }
             break;
+            case KeyEvent.VK_SPACE:
+            {
+                keySpace = true;
+                if(Mario.marioJumpTime < 20 && Mario.isGrounded)
+                    mario.jump();
+            }
+            break;
         }
     }
 
@@ -80,14 +93,16 @@ class Controller implements MouseListener, KeyListener
         switch(e.getKeyCode())
         {
             case KeyEvent.VK_RIGHT: keyRight = false;  break;
-            case KeyEvent.VK_LEFT: keyLeft = false;  break;
-            case KeyEvent.VK_UP: keyUp = false;  break;
+            case KeyEvent.VK_LEFT: keyLeft = false;   break;
+            case KeyEvent.VK_UP: keyUp = false; break;
             case KeyEvent.VK_DOWN: keyDown = false; break;
+            case KeyEvent.VK_SPACE: keySpace = false; Mario.isGrounded = false; break;
         }
     }
 
     public void keyTyped(KeyEvent e)
     {
+
     }
 
     void update() //This function updates every few ms and updates the model's location based on the keypress
@@ -165,5 +180,4 @@ class Controller implements MouseListener, KeyListener
     {
 
     }
-
 }

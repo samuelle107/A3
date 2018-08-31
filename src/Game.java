@@ -14,7 +14,7 @@ public class Game extends JFrame
     {
         mario = new Mario();
         model = new Model(mario); //Making a new Model object.
-        controller = new Controller(model); //Making a new Controller object.
+        controller = new Controller(model, mario); //Making a new Controller object.
         view = new View(controller, model, mario); //Making a View object and passing in the Controller object, controller.
 
         //"this" refers to the current object.
