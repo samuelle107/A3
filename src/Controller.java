@@ -18,7 +18,9 @@ class Controller implements MouseListener, KeyListener
     int postXLocation; //X coordinate on mouse release
     int postYLocation; //Y coordinate on mouse release
 
-    static int movementSpeed = 15;
+    static int movementSpeed = 10;
+
+    private boolean canJump; //Variable that tries to prevent mario from double jumping
 
     Controller(Model m, Mario ma) //Constructor
     {
@@ -41,8 +43,13 @@ class Controller implements MouseListener, KeyListener
             {
                 keyRight = true;
                 Mario.isFacingRight = true; //When the player moves right, Mario is facing right
-                //if(Mario.canMoveRight)
-                    model.hCamPos += movementSpeed; //Moves x pixels to the right.
+
+
+                if(Mario.canMoveRight)
+                {
+                    model.hCamPos += movementSpeed;
+                    Mario.canMoveLeft = true;
+                }
 
                 //This will cycle through an integer from 0 to 4.  Changes the mario image
                 if(Mario.marioImageIndex != 4)
@@ -55,8 +62,13 @@ class Controller implements MouseListener, KeyListener
             {
                 keyLeft = true;
                 Mario.isFacingRight = false;
+
                 if(Mario.canMoveLeft)
-                    model.hCamPos -= movementSpeed; //Moves x pixels to the left.
+                {
+                    model.hCamPos -= movementSpeed;
+                    Mario.canMoveRight = true;
+                }
+
                 if(Mario.marioImageIndex != 4)
                     Mario.marioImageIndex++;
                 else
@@ -81,8 +93,14 @@ class Controller implements MouseListener, KeyListener
             case KeyEvent.VK_SPACE:
             {
                 keySpace = true;
-                if(Mario.marioJumpTime < 20 && Mario.isGrounded)
-                    mario.jump();
+
+               if(canJump)
+               {
+                   if(Mario.marioJumpTime  == 0) //Short jump
+                       mario.jump(false);
+                   else if (Mario.marioJumpTime > 2) //Long jump
+                       mario.jump(true);
+               }
             }
             break;
         }
@@ -96,7 +114,12 @@ class Controller implements MouseListener, KeyListener
             case KeyEvent.VK_LEFT: keyLeft = false;   break;
             case KeyEvent.VK_UP: keyUp = false; break;
             case KeyEvent.VK_DOWN: keyDown = false; break;
-            case KeyEvent.VK_SPACE: keySpace = false; Mario.isGrounded = false; break;
+            case KeyEvent.VK_SPACE:
+            {
+                keySpace = false;
+                canJump = false; //When the space key is released, then mario will not be able to jump until he has landed
+            }
+            break;
         }
     }
 
@@ -107,10 +130,8 @@ class Controller implements MouseListener, KeyListener
 
     void update() //This function updates every few ms and updates the model's location based on the keypress
     {
-        if(keyRight) model.dest_x++;
-        if(keyLeft) model.dest_x--;
-        if(keyDown) model.dest_y++;
-        if(keyUp) model.dest_y--;
+        if(Mario.isGrounded)
+            canJump = true; //Mario can only jump if he is on the ground
     }
 
     public void mousePressed(MouseEvent e)

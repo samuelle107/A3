@@ -42,7 +42,7 @@ public class Brick
     }
 
     //Function to load the brick image
-    public void loadBrickImage()
+    public BufferedImage loadBrickImage()
     {
         //Prevents the image from trying to load if it is already equal to something
         if(brickImage == null)
@@ -57,5 +57,6 @@ public class Brick
                 System.exit(1);
             }
         }
+        return brickImage;
     }
 }

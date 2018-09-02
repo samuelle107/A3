@@ -3,13 +3,9 @@ class Model
 {
     Mario mario;
 
-    int dest_x;
-    int dest_y;
-
-    int hCamPos;
+    static int hCamPos;
 
     ArrayList<Brick> bricks;
-    ArrayList<Boolean> brickCollision;
 
     Model(Mario m)
     {
@@ -28,16 +24,16 @@ class Model
     {
         mario.update();
         Mario.x = hCamPos +500; //Keeps track of the x position of Mario.  Adding 500 because Mario starts at x = 500;
+
         if(bricks.size() != 0)
-        {
             for(int i = 0; i < bricks.size(); i++)
             {
-                if(mario.collisionDetection(bricks.get(i)))
-                    Mario.canMoveLeft = false;
-                else
-                    Mario.canMoveLeft = true;
+                if(mario.collisionDetection(bricks.get(i))) //This will turn off left movement for all the bricks
+                {
+
+                }
+
             }
-        }
     }
 
     //Marshall Method
@@ -54,10 +50,9 @@ class Model
     //Unmarshal method
     void unMarshal (Json ob)
     {
-        ArrayList<Brick> newList = new ArrayList<Brick>();
+        bricks.clear();
         Json jsonList = ob.get("bricks");
         for (int i = 0; i < jsonList.size(); i++)
-            newList.add(new Brick(jsonList.get(i)));
-        bricks = newList;
+            bricks.add(new Brick(jsonList.get(i)));
     }
 }

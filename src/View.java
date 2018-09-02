@@ -30,8 +30,7 @@ class View extends JPanel //The view class shows what the user will see.
         for(int i = 0; i < model.bricks.size(); i++)
         {
             Brick b = model.bricks.get(i); //Since we have an array of bricks, we want to change the index every loop
-            b.loadBrickImage(); //Calls the loadBrickImage function to load the image in the brick class.  This will store the image into a static variable.
-            g.drawImage(Brick.brickImage, b.xLocation - model.hCamPos, b.yLocation, b.wDimension, b.hDimension, null); //Draw the ith brick.  Each brick has difference properties, so we use the object, b.
+            g.drawImage(b.loadBrickImage(), b.xLocation - model.hCamPos, b.yLocation, b.wDimension, b.hDimension, null); //Draw the ith brick.  Each brick has difference properties, so we use the object, b.
         }
 
         g.setColor(Color.gray); //Set the color of the ground to be gray
