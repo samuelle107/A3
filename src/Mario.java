@@ -2,7 +2,10 @@ import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.rmi.server.ExportException;
+import java.util.ArrayList;
 
 public class Mario
 {
@@ -21,6 +24,7 @@ public class Mario
 
     static int marioJumpTime;
 
+
     static double verticalVelocity;
 
     static boolean isGrounded;
@@ -32,7 +36,7 @@ public class Mario
 
     Mario()
     {
-        y = 500; //Initializes mario to be at x = 500
+        y = 500; //Initializes mario to be at y = 500
         isFacingRight = true;
         isGrounded = true;
         canMoveLeft = true;
@@ -58,6 +62,7 @@ public class Mario
         return marioImages;
     }
 
+
     public void update()
     {
         verticalVelocity += 1.2;
@@ -70,10 +75,10 @@ public class Mario
             y = 500; // snap back to the ground
         }
 
-        if(verticalVelocity == 0.0)
+        if(verticalVelocity == 0.0) //Mario is grounded
         {
             isGrounded = true;
-            marioJumpTime = 0; //Resets the counter on how many frames mario has been in the air
+            marioJumpTime = 0;
         }
         else
         {
@@ -87,7 +92,6 @@ public class Mario
         marioX2 = x + marioWidth;
         marioY1 = y;
         marioY2 = y + marioHeight;
-
     }
 
     public void jump(boolean longJump)
@@ -112,39 +116,30 @@ public class Mario
     {
         //This block of code will return true if mario intersects with a brick
         if(marioX1 > b.xLocation + b.wDimension)
-        {
             return false;
-        }
         if(marioX2 < b.xLocation)
-        {
             return false;
-        }
-
         if(marioY1 > b.yLocation + b.hDimension)
-        {
             return false;
-        }
         if(marioY2 < b.yLocation)
-        {
             return false;
-        }
 
-        if(  (marioX1 < b.xLocation)  &&  (   (marioX2 > b.xLocation) && (marioX2 < (b.xLocation + b.wDimension))    )             )
+        //This block will execute if mario has collided
+        if((marioX1 < b.xLocation) && ((marioX2 > b.xLocation) && (marioX2 < (b.xLocation + b.wDimension)))) //Mario collided with the left side
             getOut("l", b);
-        if(    (marioX2 > (b.xLocation+b.wDimension)   &&  (    (  (marioX1 < (b.xLocation+b.wDimension))   && (marioX1 > b.xLocation)  )   )  )                  )
+        if((marioX2 > (b.xLocation+b.wDimension) && (((marioX1 < (b.xLocation+b.wDimension)) && (marioX1 > b.xLocation))))) //Mario collided with the right side
             getOut("r", b);
 
-
-        if(marioY1 <= b.yLocation)
+        if(marioY1 <= b.yLocation) //Mario collided with the top side
             getOut("t", b);
-        if(marioY2 >= (b.yLocation+b.hDimension))
+        if(marioY2 >= (b.yLocation+b.hDimension)) //Mario collided with the bottom
             getOut("b", b);
 
         return true;
     }
 
     //If mario collides, this function will get him out depending on the side mario collided into
-    void getOut(String collisionSide, Brick b)
+    private void getOut(String collisionSide, Brick b)
     {
         if(collisionSide.equals("r"))
             canMoveLeft = false;

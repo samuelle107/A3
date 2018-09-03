@@ -77,19 +77,8 @@ class Controller implements MouseListener, KeyListener
             break;
             case KeyEvent.VK_UP: keyUp = true; break;
             case KeyEvent.VK_DOWN: keyDown = true; break;
-            case KeyEvent.VK_L: //When the user presses L, unmarshal the JSON
-            {
-                Json j = Json.load("maps.json"); //
-                model.unMarshal(j);
-                System.out.println("You loaded the map");
-            }
-            break;
-            case KeyEvent.VK_S: //When the user presses S, marshal the JSON
-            {
-                model.marshal().save("maps.json");
-                System.out.println("You saved the map");
-            }
-            break;
+            case KeyEvent.VK_L: Json j = Json.load("maps.json"); model.unMarshal(j); break;
+            case KeyEvent.VK_S: model.marshal().save("maps.json"); break;
             case KeyEvent.VK_SPACE:
             {
                 keySpace = true;

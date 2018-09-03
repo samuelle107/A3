@@ -1,5 +1,6 @@
 import javax.swing.JPanel;
 import java.awt.*;
+import java.util.Iterator;
 
 class View extends JPanel //The view class shows what the user will see.
 {
@@ -24,7 +25,10 @@ class View extends JPanel //The view class shows what the user will see.
     {
         g.setColor(new Color(128, 255, 255)); //Sets the color of the background to be cyan.
         Background background = new Background();
-        g.drawImage(background.loadImage(),0,0,null);
+
+
+        g.drawImage(background.loadImage(),-(int)(model.hCamPos * 0.1f),0,null);
+
 
         //This for loop will loop through all of the brick objects
         for(int i = 0; i < model.bricks.size(); i++)

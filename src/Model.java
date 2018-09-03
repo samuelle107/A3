@@ -1,10 +1,10 @@
 import java.util.ArrayList;
+import java.util.Iterator;
+
 class Model
 {
     Mario mario;
-
     static int hCamPos;
-
     ArrayList<Brick> bricks;
 
     Model(Mario m)
@@ -23,17 +23,12 @@ class Model
     public void update()
     {
         mario.update();
-        Mario.x = hCamPos +500; //Keeps track of the x position of Mario.  Adding 500 because Mario starts at x = 500;
+        Mario.x = hCamPos + 500; //Keeps track of the x position of Mario.  Adding 500 because Mario starts at x = 500;
 
-        if(bricks.size() != 0)
-            for(int i = 0; i < bricks.size(); i++)
-            {
-                if(mario.collisionDetection(bricks.get(i))) //This will turn off left movement for all the bricks
-                {
-
-                }
-
-            }
+        //Using an iterator to iterator through the Brick ArrayList and detecting collision
+        Iterator<Brick> brickIterator = bricks.iterator();
+        while(brickIterator.hasNext())
+            mario.collisionDetection(brickIterator.next());
     }
 
     //Marshall Method
