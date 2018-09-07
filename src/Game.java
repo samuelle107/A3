@@ -9,7 +9,6 @@ public class Game extends JFrame
     Controller controller;
     Mario mario;
 
-
     public Game()
     {
         mario = new Mario();
