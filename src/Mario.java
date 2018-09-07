@@ -1,6 +1,9 @@
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.Buffer;
+import java.util.ArrayList;
 
 public class Mario
 {
@@ -19,10 +22,14 @@ public class Mario
     boolean isGrounded;
     boolean isFacingRight; //boolean to determine if mario is facing right
 
+    static ArrayList<BufferedImage> marioImage;
+    static ArrayList<BufferedImage> reversedMarioImages;
+
     Mario()
     {
         x = 500;
         y = 500; //Initializes mario to be at y = 500
+        marioImageIndex = 0;
         isFacingRight = true;
         isGrounded = true;
     }
@@ -78,10 +85,16 @@ public class Mario
             if(isGrounded)
             {
                 if(!longJump)
+                {
+                    locationOfMarioPast();
                     verticalVelocity = -23;
+                }
             }
             else if(longJump)
+            {
+                locationOfMarioPast();
                 verticalVelocity = -9;
+            }
         }
     }
 
@@ -116,18 +129,20 @@ public class Mario
 
     private void collisionHandler(Brick b)
     {
-        if(x + marioWidth >= b.xLoc && prevX < b.xLoc) //Hits Right wall
-            x = b.xLoc - marioWidth - 1;
-        else if(x <= b.xLoc + b.wDim && prevX > b.xLoc + b.wDim) //Hits Left wall
+        if(x <= b.xLoc + b.wDim && prevX > b.xLoc + b.wDim) //Hits right wall
             x = b.xLoc + b.wDim + 1;
-        else if(y + marioHeight > b.yLoc && prevY < b.yLoc) //Hits top
+        else if(y + marioHeight >= b.yLoc && prevY + marioHeight < b.yLoc) //Lands on top
         {
-            y = b.yLoc - marioHeight;
+            y = b.yLoc - marioHeight - 1;
             isGrounded = true;
             verticalVelocity = 0.0;
             marioJumpTime = 0;
         }
-        else if ( y < b.yLoc + b.hDim && prevY > b.yLoc + b.hDim) //Hits bottom
-            y = b.yLoc + b.hDim +1;
+        else if(x + marioWidth >= b.xLoc && prevX < b.xLoc) //Hits left wall
+            x = b.xLoc - marioWidth - 1;
+        else if(y <= b.yLoc + b.hDim && prevY > b.yLoc + b.hDim && (500 - (b.yLoc+b.hDim) > marioHeight)) //Hits bottom
+                y = b.yLoc + b.hDim + 1;
+        else //This is needed whenever the brick is on the ground, mario is on the right side, and when he moves left and jumps.  Very specific senario
+            x = b.xLoc + b.wDim + 1;
     }
 }
