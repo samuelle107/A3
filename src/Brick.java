@@ -35,8 +35,8 @@ public class Brick
     //Unmarhsaling constructor.  Extracts the data from the JSON file and stores it in the member variables
     Brick(Json ob)
     {
-        xLoc =  (int)ob.getLong("x");
-        yLoc =  (int)ob.getLong("y");
+        xLoc = (int)ob.getLong("x");
+        yLoc = (int)ob.getLong("y");
         wDim = (int)ob.getLong("w");
         hDim = (int)ob.getLong("h");
     }

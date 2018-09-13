@@ -7,17 +7,11 @@ class View extends JPanel //The view class shows what the user will see.
     Model model;
     Mario mario;
 
-    Image[] marioImages;
-    Image[] reversedMarioImages;
-
     View(Controller c, Model m, Mario ma)
     {
         model = m;
         mario = ma;
         c.setView(this);
-
-        marioImages = mario.loadMarioImages("mario");
-        reversedMarioImages = mario.loadMarioImages("rmario");
     }
 
     public void paintComponent(Graphics g)
@@ -35,8 +29,8 @@ class View extends JPanel //The view class shows what the user will see.
 
         //Depending on the direction of mario,
         if(mario.isFacingRight)
-            g.drawImage(marioImages[mario.marioImageIndex],500, mario.y,null);
+            g.drawImage(Mario.marioImages[mario.marioImageIndex],500, mario.y,null);
         else
-            g.drawImage(reversedMarioImages[mario.marioImageIndex],500, mario.y,null);
+            g.drawImage(Mario.reversedMarioImages[mario.marioImageIndex],500, mario.y,null);
     }
 }

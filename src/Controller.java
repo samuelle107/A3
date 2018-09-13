@@ -18,7 +18,6 @@ class Controller implements MouseListener, KeyListener
     private int postXLocation; //X coordinate on mouse release
     private int postYLocation; //Y coordinate on mouse release
 
-    private boolean canJump; //Variable that tries to prevent mario from double jumping
 
     Controller(Model m, Mario ma) //Constructor
     {
@@ -43,7 +42,19 @@ class Controller implements MouseListener, KeyListener
             case KeyEvent.VK_DOWN: keyDown = true; break;
             case KeyEvent.VK_L: Json j = Json.load("maps.json"); model.unMarshal(j); break;
             case KeyEvent.VK_S: model.marshal().save("maps.json"); break;
-            case KeyEvent.VK_SPACE: keySpace = true; break;
+            case KeyEvent.VK_SPACE:
+            {
+                keySpace = true;
+                if(mario.canJump)
+                {
+                    if(mario.marioJumpTime  == 0) //Short jump
+                        mario.jump(false);
+                    else if (mario.marioJumpTime > 2) //Long jump
+                        mario.jump(true);
+                }
+
+
+            } break;
         }
     }
 
@@ -55,7 +66,7 @@ class Controller implements MouseListener, KeyListener
             case KeyEvent.VK_LEFT: keyLeft = false;   break;
             case KeyEvent.VK_UP: keyUp = false; break;
             case KeyEvent.VK_DOWN: keyDown = false; break;
-            case KeyEvent.VK_SPACE: keySpace = false; canJump = false; break;
+            case KeyEvent.VK_SPACE: keySpace = false; mario.canJump = false; break;
         }
     }
 
@@ -69,7 +80,7 @@ class Controller implements MouseListener, KeyListener
         mario.locationOfMarioPast(); //Gets the 'current' position of mario and stores it in the 'previous' variables
 
         if(mario.isGrounded)
-            canJump = true; //Mario can only jump if he is on the ground
+            mario.canJump = true;
 
         //Handles Mario's movement and stores mario's new location in the current variables
         if(keyLeft)
@@ -83,16 +94,6 @@ class Controller implements MouseListener, KeyListener
             mario.isFacingRight = true; //When the player moves right, Mario is facing right
             mario.marioImageCycle();
             mario.x += mario.marioMovementSpeed;
-        }
-        if(keySpace)
-        {
-            if(canJump)
-            {
-                if(mario.marioJumpTime  == 0) //Short jump
-                    mario.jump(false);
-                else if (mario.marioJumpTime > 2) //Long jump
-                    mario.jump(true);
-            }
         }
     }
 
@@ -145,7 +146,7 @@ class Controller implements MouseListener, KeyListener
                 yFinal = postYLocation;
             }
         }
-        model.addTube(xFinal + (mario.x - 500), yFinal,w,h); //Adds the tube to the array
+        model.addBrick(xFinal + (mario.x - 500), yFinal,w,h); //Adds the tube to the array
     }
 
     public void mouseEntered(MouseEvent e)

@@ -1,9 +1,6 @@
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.nio.Buffer;
-import java.util.ArrayList;
 
 public class Mario
 {
@@ -18,12 +15,13 @@ public class Mario
     final int marioMovementSpeed = 10;
     int marioImageIndex; //Integer that keeps track of the current mario sprite
     int marioJumpTime; //Contains how many frames it has been since Mario has been on solid ground
-    private double verticalVelocity;
+    double verticalVelocity;
     boolean isGrounded;
     boolean isFacingRight; //boolean to determine if mario is facing right
+    boolean canJump; //Variable that tries to prevent mario from double jumping
 
-    static ArrayList<BufferedImage> marioImage;
-    static ArrayList<BufferedImage> reversedMarioImages;
+    static BufferedImage[] marioImages;
+    static BufferedImage[] reversedMarioImages;
 
     Mario()
     {
@@ -32,17 +30,20 @@ public class Mario
         marioImageIndex = 0;
         isFacingRight = true;
         isGrounded = true;
+
+        marioImages = loadMarioImages("mario");
+        reversedMarioImages = loadMarioImages("rmario");
     }
 
-    Image[] loadMarioImages(String fileName) //Loads the mario images into a new image array and returns it
+    BufferedImage[] loadMarioImages(String fileName) //Loads the mario images into a new image array and returns it
     {
-        Image[] marioImages = new Image[5];
+        BufferedImage[] images = new BufferedImage[5];
 
         for(int i = 0; i < 5; i++)
         {
             try
             {
-                marioImages[i] = ImageIO.read(new File(fileName + Integer.toString(i+1) + ".png"));
+                images[i] = ImageIO.read(new File(fileName + Integer.toString(i+1) + ".png"));
             }
             catch (Exception e)
             {
@@ -50,7 +51,7 @@ public class Mario
                 System.exit(1);
             }
         }
-        return marioImages;
+        return images;
     }
 
     void update()
@@ -80,7 +81,11 @@ public class Mario
 
     void jump(boolean longJump)
     {
-        if(marioJumpTime < 25) //Mario can only stay in the air for so long
+        if(verticalVelocity > 0)
+        {
+
+        }
+        else if(marioJumpTime < 25) //Mario can only stay in the air for so long
         {
             if(isGrounded)
             {
@@ -129,7 +134,12 @@ public class Mario
 
     private void collisionHandler(Brick b)
     {
-        if(x <= b.xLoc + b.wDim && prevX > b.xLoc + b.wDim) //Hits right wall
+        if(y <= b.yLoc + b.hDim && prevY > b.yLoc + b.hDim ) //Hits bottom
+        {
+            y = b.yLoc + b.hDim + 1;
+            verticalVelocity = 0;
+        }
+        else if(x <= b.xLoc + b.wDim && prevX > b.xLoc + b.wDim) //Hits right wall
             x = b.xLoc + b.wDim + 1;
         else if(y + marioHeight >= b.yLoc && prevY + marioHeight < b.yLoc) //Lands on top
         {
@@ -140,8 +150,11 @@ public class Mario
         }
         else if(x + marioWidth >= b.xLoc && prevX < b.xLoc) //Hits left wall
             x = b.xLoc - marioWidth - 1;
-        else if(y <= b.yLoc + b.hDim && prevY > b.yLoc + b.hDim && (500 - (b.yLoc+b.hDim) > marioHeight)) //Hits bottom
-                y = b.yLoc + b.hDim + 1;
+        else if(y <= b.yLoc + b.hDim && prevY > b.yLoc + b.hDim ) //Hits bottom
+        {
+            y = b.yLoc + b.hDim + 1;
+            verticalVelocity = 0;
+        }
         else //This is needed whenever the brick is on the ground, mario is on the right side, and when he moves left and jumps.  Very specific senario
             x = b.xLoc + b.wDim + 1;
     }

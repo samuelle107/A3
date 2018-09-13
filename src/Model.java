@@ -12,7 +12,7 @@ class Model
         bricks = new ArrayList<Brick>();
     }
 
-    public void addTube(int x, int y, int w, int h)
+    public void addBrick(int x, int y, int w, int h)
     {
         //Create a new Brick object called b and adds it to the bricks array
         Brick b = new Brick(x, y, w, h);
@@ -26,6 +26,7 @@ class Model
         Iterator<Brick> brickIterator = bricks.iterator();
         while(brickIterator.hasNext())
             mario.collisionDetection(brickIterator.next());
+
     }
 
     //Marshall Method
